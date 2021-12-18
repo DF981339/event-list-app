@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import { Routes, Route } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 function App() {
   return (
@@ -12,9 +13,11 @@ function App() {
       <Header />
       <Routes>
         <Route exact path="/" element={<Login />} />
-        <Route exact path="login" element={<Login />} />
-        <Route exact path="signup" element={<Signup />} />
-        <Route exact path="eventlist" element={<Eventlist />} />
+        <Route exact path="/login" element={<Login />} />
+        <Route exact path="/signup" element={<Signup />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route exact path="/eventlist" element={<Eventlist />} />
+        </Route>
       </Routes>
     </div>
   );

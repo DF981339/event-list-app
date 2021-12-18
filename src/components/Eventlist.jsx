@@ -18,10 +18,25 @@ import { useSelector } from "react-redux";
 import { DateTimePicker } from "@mui/lab";
 import DateAdapter from "@mui/lab/AdapterDayjs";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { Navigate } from "react-router-dom";
 
 const Eventlist = () => {
   // user info
-  const { token } = useSelector((state) => state.user);
+  const { username, token } = useSelector((state) => state.user);
+
+  // // check auth
+  // const [isAuth, setIsAuth] = useState(false);
+  // useEffect(() => {
+  //   if (username !== "") {
+  //     setIsAuth(true);
+  //   } else {
+  //     setIsAuth(false);
+  //   }
+  // }, []);
+  // if (!isAuth) {
+  //   return <Navigate to="/" />;
+  // }
+
   const [results, setResults] = useState([]);
 
   // show adding row

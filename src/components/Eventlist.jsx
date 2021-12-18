@@ -121,7 +121,12 @@ const Eventlist = () => {
               <TableCell className="table-header-text">To</TableCell>
               <TableCell className="table-header-text">Content</TableCell>
               <TableCell className="table-header-text">Status</TableCell>
-              <TableCell className="table-header-text">Actions</TableCell>
+              <TableCell
+                sx={{ textAlign: "center" }}
+                className="table-header-text"
+              >
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
 
@@ -170,6 +175,8 @@ const Eventlist = () => {
                 <TableCell>
                   <Checkbox onChange={handleChecked} />
                 </TableCell>
+
+                {/* actions */}
                 <TableCell>
                   <Button variant="contained" onClick={addEvent}>
                     SAVE
@@ -200,7 +207,7 @@ const Eventlist = () => {
 export default Eventlist;
 
 const EventListBody = styled.main`
-  padding: 100px;
+  padding: 100px 150px;
   background-color: rgb(233, 237, 241);
   height: 100vh;
 

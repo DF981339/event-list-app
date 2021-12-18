@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
-const Event = ({ id, from, to, content, isCompleted }) => {
+const Event = ({ id, from, to, content, isCompleted, updateParent }) => {
   // show edit, save, delete
   const [editClicked, setEditClicked] = useState(false);
   const { token } = useSelector((state) => state.user);
@@ -18,6 +18,7 @@ const Event = ({ id, from, to, content, isCompleted }) => {
 
   const handleDelete = (id) => {
     deleteEvent(id);
+    updateParent();
     setEditClicked(false);
   };
 

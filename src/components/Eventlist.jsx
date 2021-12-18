@@ -24,6 +24,9 @@ const Eventlist = () => {
   const { token } = useSelector((state) => state.user);
   const [results, setResults] = useState([]);
 
+  // for rerender purpose
+  const [val, setVal] = useState(false);
+
   // show adding row
   const [newEvent, setNewEvent] = useState(false);
 
@@ -38,7 +41,7 @@ const Eventlist = () => {
 
   useEffect(() => {
     getEvents();
-  }, [newEvent]);
+  }, [newEvent, val]);
 
   const getEvents = async () => {
     let res = await axios.get("http://localhost:4000/api/event/");
@@ -79,6 +82,7 @@ const Eventlist = () => {
     let res = await axios.post("http://localhost:4000/api/event/", requestBody);
 
     if (res.status === 201) {
+      console.log("added");
       setNewEvent(false);
 
       // reset
@@ -87,6 +91,10 @@ const Eventlist = () => {
       setContent("");
       setChecked(false);
     }
+  };
+
+  const handleRerender = () => {
+    setVal(!val);
   };
 
   return (
@@ -179,6 +187,7 @@ const Eventlist = () => {
                 to={to}
                 content={content}
                 isCompleted={isCompleted}
+                updateParent={handleRerender}
               />
             ))}
           </TableBody>

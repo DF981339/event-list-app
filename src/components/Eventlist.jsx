@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import dayjs from "dayjs";
 import {
   TableContainer,
   Table,
@@ -18,6 +17,7 @@ import { useSelector } from "react-redux";
 import { DateTimePicker } from "@mui/lab";
 import DateAdapter from "@mui/lab/AdapterDayjs";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import Event from "./Event";
 
 const Eventlist = () => {
   // user info
@@ -26,9 +26,6 @@ const Eventlist = () => {
 
   // show adding row
   const [newEvent, setNewEvent] = useState(false);
-
-  // show edit, save, delete
-  const [editClicked, setEditClicked] = useState(false);
 
   // new event info
   const [fromDateAndTime, setFromDateAndTime] = useState(new Date());
@@ -41,7 +38,7 @@ const Eventlist = () => {
 
   useEffect(() => {
     getEvents();
-  }, [newEvent, editClicked]);
+  }, [newEvent]);
 
   const getEvents = async () => {
     let res = await axios.get("http://localhost:4000/api/event/");
@@ -69,23 +66,6 @@ const Eventlist = () => {
 
   const handleChecked = (event) => {
     setChecked(event.target.checked);
-  };
-
-  const handleEdit = () => {
-    setEditClicked(true);
-  };
-
-  const handleDelete = (id) => {
-    deleteEvent(id);
-    setEditClicked(false);
-  };
-
-  const deleteEvent = async (id) => {
-    let res = await axios.delete(`http://localhost:4000/api/event/${id}`);
-
-    if (res.status === 200) {
-      console.log("deleted");
-    }
   };
 
   const addEvent = async () => {
@@ -192,39 +172,14 @@ const Eventlist = () => {
 
             {/* render event list */}
             {results.map(({ _id, from, to, content, isCompleted }) => (
-              <TableRow
+              <Event
                 key={_id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row" sx={{ fontSize: "16px" }}>
-                  {dayjs(from).format("MM/DD/YYYY, hh:mm:ss A")}
-                </TableCell>
-                <TableCell sx={{ fontSize: "16px" }}>
-                  {dayjs(to).format("MM/DD/YYYY, hh:mm:ss A")}
-                </TableCell>
-                <TableCell sx={{ fontSize: "16px" }}>{content}</TableCell>
-                <TableCell sx={{ fontSize: "16px" }}>
-                  {isCompleted ? "Completed" : "Pending"}
-                </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
-                  {editClicked ? (
-                    <>
-                      <Button variant="contained">SAVE</Button>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => handleDelete(_id)}
-                      >
-                        DELETE
-                      </Button>
-                    </>
-                  ) : (
-                    <Button variant="contained" onClick={handleEdit}>
-                      EDIT
-                    </Button>
-                  )}
-                </TableCell>
-              </TableRow>
+                id={_id}
+                from={from}
+                to={to}
+                content={content}
+                isCompleted={isCompleted}
+              />
             ))}
           </TableBody>
         </Table>

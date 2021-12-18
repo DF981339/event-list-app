@@ -52,7 +52,7 @@ const Login = () => {
           <LockOutlinedIcon />
         </div>
         <h1 className="title">Log in</h1>
-        <form className="signup-form" onSubmit={handleSubmit}>
+        <form className="signin-form" onSubmit={handleSubmit}>
           <TextField
             label="Username"
             color="grey"
@@ -107,7 +107,7 @@ const LoginBody = styled.main`
       text-align: center;
     }
 
-    .signup-form {
+    .signin-form {
       display: flex;
       flex-direction: column;
       width: 400px;

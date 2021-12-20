@@ -101,22 +101,36 @@ const Eventlist = () => {
       isCompleted: checked,
     };
 
-    let res = await axios.post("http://localhost:4000/api/event/", requestBody);
-
-    if (res.status === 201) {
-      dispatch(
-        setCurrMessage({
-          msg: res.data.message,
-          type: "success",
-        })
+    try {
+      let res = await axios.post(
+        "http://localhost:4000/api/event/",
+        requestBody
       );
-      setNewEvent(false);
 
-      // reset
-      setFromDateAndTime(new Date());
-      setToDateAndTime(new Date());
-      setContent("");
-      setChecked(false);
+      if (res.status === 201) {
+        dispatch(
+          setCurrMessage({
+            msg: res.data.message,
+            type: "success",
+          })
+        );
+        setNewEvent(false);
+
+        // reset
+        setFromDateAndTime(new Date());
+        setToDateAndTime(new Date());
+        setContent("");
+        setChecked(false);
+      }
+    } catch (err) {
+      if (err.response.status === 400) {
+        dispatch(
+          setCurrMessage({
+            msg: err.response.data.message,
+            type: "error",
+          })
+        );
+      }
     }
   };
 
@@ -126,7 +140,7 @@ const Eventlist = () => {
 
   return (
     <EventListBody>
-      <TableContainer component={Paper}>
+      <TableContainer sx={{ maxHeight: "100%" }} component={Paper}>
         <Table>
           <TableHead>
             {/* add event button row */}
@@ -204,7 +218,7 @@ const Eventlist = () => {
                 </TableCell>
 
                 {/* actions */}
-                <TableCell>
+                <TableCell sx={{ textAlign: "center" }}>
                   <Button variant="contained" onClick={addEvent}>
                     SAVE
                   </Button>

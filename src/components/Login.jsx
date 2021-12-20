@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/userSlice";
+import { setCurrMessage } from "../redux/messageSlice";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 const Login = () => {
@@ -39,10 +40,25 @@ const Login = () => {
               token: res.data.data.token,
             })
           );
+          dispatch(
+            setCurrMessage({
+              msg: res.data.message,
+              type: "success",
+            })
+          );
           navigate("/eventlist");
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        if (err.response.status === 401) {
+          dispatch(
+            setCurrMessage({
+              msg: err.response.data.message,
+              type: "error",
+            })
+          );
+        }
+      });
   };
 
   return (
@@ -84,7 +100,7 @@ const LoginBody = styled.main`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 100px;
+  padding: 150px;
 
   .container {
     display: flex;

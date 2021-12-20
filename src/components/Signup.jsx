@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/userSlice";
+import { setCurrMessage } from "../redux/messageSlice";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 const Signup = () => {
@@ -43,6 +44,8 @@ const Signup = () => {
       .post("http://localhost:4000/api/user/signup", requestBody)
       .then((res) => {
         if (res.status === 201) {
+          const userCreated = res.data.message;
+
           axios
             .post("http://localhost:4000/api/user/login", requestBody)
             .then((res) => {
@@ -53,15 +56,30 @@ const Signup = () => {
                     token: res.data.data.token,
                   })
                 );
+
+                dispatch(
+                  setCurrMessage({
+                    msg: userCreated,
+                    type: "success",
+                  })
+                );
+
                 navigate("/eventlist");
               }
             })
             .catch((err) => console.log(err));
-        } else {
-          console.log("user already exist");
         }
       })
-      .catch((err) => console.log("user already exist"));
+      .catch((err) => {
+        if (err.response.status === 500) {
+          dispatch(
+            setCurrMessage({
+              msg: err.response.data.message,
+              type: "error",
+            })
+          );
+        }
+      });
   };
 
   return (
@@ -111,7 +129,7 @@ const SignUpBody = styled.main`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 100px;
+  padding: 150px;
 
   .container {
     display: flex;

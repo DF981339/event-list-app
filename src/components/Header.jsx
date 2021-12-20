@@ -8,18 +8,30 @@ import {
   Menu,
   MenuItem,
   Button,
+  Alert,
 } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/userSlice";
+import { setCurrMessage } from "../redux/messageSlice";
 
 const Header = () => {
   const { username } = useSelector((state) => state.user);
+  const { msg, type } = useSelector((state) => state.message);
   const [auth, setAuth] = useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const resetMessage = () => {
+    dispatch(
+      setCurrMessage({
+        msg: "",
+        type: "",
+      })
+    );
+  };
 
   useEffect(() => {
     if (username !== "") {
@@ -43,14 +55,17 @@ const Header = () => {
       })
     );
 
+    resetMessage();
     navigate("/");
   };
 
   const handleLogin = () => {
+    resetMessage();
     navigate("/login");
   };
 
   const handleSignup = () => {
+    resetMessage();
     navigate("/signup");
   };
 
@@ -105,6 +120,16 @@ const Header = () => {
           </div>
         )}
       </Toolbar>
+      {msg !== "" ? (
+        <Alert
+          sx={{
+            width: "100%",
+          }}
+          severity={type}
+        >
+          {msg}
+        </Alert>
+      ) : null}
     </AppBar>
   );
 };

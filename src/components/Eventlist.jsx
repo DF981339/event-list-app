@@ -13,13 +13,18 @@ import {
   TextField,
   Checkbox,
 } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { DateTimePicker } from "@mui/lab";
 import DateAdapter from "@mui/lab/AdapterDayjs";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import Event from "./Event";
+import { setCurrMessage } from "../redux/messageSlice";
 
 const Eventlist = () => {
+  // message
+  const dispatch = useDispatch();
+  const { msg } = useSelector((state) => state.message);
+
   // user info
   const { token } = useSelector((state) => state.user);
   const [results, setResults] = useState([]);
@@ -39,9 +44,26 @@ const Eventlist = () => {
   // set auth header
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
+  // rerender
   useEffect(() => {
     getEvents();
   }, [newEvent, val]);
+
+  // clear message after 3 second
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      dispatch(
+        setCurrMessage({
+          msg: "",
+          type: "",
+        })
+      );
+    }, 3000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [msg]);
 
   const getEvents = async () => {
     let res = await axios.get("http://localhost:4000/api/event/");
@@ -82,7 +104,12 @@ const Eventlist = () => {
     let res = await axios.post("http://localhost:4000/api/event/", requestBody);
 
     if (res.status === 201) {
-      console.log("added");
+      dispatch(
+        setCurrMessage({
+          msg: res.data.message,
+          type: "success",
+        })
+      );
       setNewEvent(false);
 
       // reset
@@ -207,7 +234,7 @@ const Eventlist = () => {
 export default Eventlist;
 
 const EventListBody = styled.main`
-  padding: 100px 150px;
+  padding: 150px;
   background-color: rgb(233, 237, 241);
   height: 100vh;
 

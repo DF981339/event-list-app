@@ -11,9 +11,11 @@ import {
 import storage from "redux-persist/lib/storage";
 
 import userReducer from "./userSlice";
+import messageReducer from "./messageSlice";
 
 const reducers = combineReducers({
   user: userReducer,
+  message: messageReducer,
 });
 
 const persistConfig = {

@@ -10,10 +10,14 @@ import { DateTimePicker } from "@mui/lab";
 import DateAdapter from "@mui/lab/AdapterDayjs";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import dayjs from "dayjs";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setCurrMessage } from "../redux/messageSlice";
 import axios from "axios";
 
 const Event = ({ id, from, to, content, isCompleted, updateParent }) => {
+  // message
+  const dispatch = useDispatch();
+
   // show edit, save, delete
   const [editClicked, setEditClicked] = useState(false);
   const { token } = useSelector((state) => state.user);
@@ -57,9 +61,19 @@ const Event = ({ id, from, to, content, isCompleted, updateParent }) => {
     let res = await axios.delete(`http://localhost:4000/api/event/${id}`);
 
     if (res.status === 200) {
-      console.log("deleted");
+      dispatch(
+        setCurrMessage({
+          msg: res.data.message,
+          type: "success",
+        })
+      );
     } else {
-      console.log("something wrong when deleting");
+      dispatch(
+        setCurrMessage({
+          msg: res.data.message,
+          type: "error",
+        })
+      );
     }
   };
 
@@ -83,9 +97,19 @@ const Event = ({ id, from, to, content, isCompleted, updateParent }) => {
     );
 
     if (res.status === 200) {
-      console.log("updated");
+      dispatch(
+        setCurrMessage({
+          msg: res.data.message,
+          type: "success",
+        })
+      );
     } else {
-      console.log("something wrong when updating");
+      dispatch(
+        setCurrMessage({
+          msg: res.data.message,
+          type: "error",
+        })
+      );
     }
   };
 
